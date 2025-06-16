@@ -11,12 +11,11 @@ App.use(cors());
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use('/api/auth', authenticationRoutes);
-
+App.get('/',(req,res)=>{
+    return res.status(200).json({message : "hello"});
+})
 const ConnectDB = ()=> {
-    Mongoose.connect('mongodb://localhost:27017/Integrity', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
+    Mongoose.connect('mongodb://localhost:27017/integrity')
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 }
