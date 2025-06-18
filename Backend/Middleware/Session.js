@@ -105,5 +105,63 @@ const RefreshSession = async (req, res, next) => {
     });
   }
 };
+const LogoutSession = async (req, res, next) => {
+  try {
+    const { refTok } = req.body;
 
-module.exports = { CreateSession, VerifySession, RefreshSession };
+    if (!refTok) {
+      return res.status(400).json({
+        success: false,
+        error: "Refresh token not provided",
+      });
+    }
+
+    const SessionToDel = await RefreshToken.findOne({ refresh: refTok });
+
+    if (SessionToDel) {
+      await RefreshToken.deleteOne({ refresh: SessionToDel.refresh });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: "Error during logout",
+    });
+  }
+};
+
+const LogOutAll = async (req, res, next) => {
+  try {
+    const { refTok } = req.body;
+
+    if (!refTok) {
+      return res.status(400).json({
+        success: false,
+        error: "Refresh token not provided",
+      });
+    }
+
+    const SessionToDel = await RefreshToken.findOne({ refresh: refTok });
+
+    if (SessionToDel) {
+      const { email } = SessionToDel;
+      await RefreshToken.deleteMany({ email: email });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: "Error during logout from all sessions",
+    });
+  }
+};
+
+module.exports = {
+  CreateSession,
+  VerifySession,
+  RefreshSession,
+  LogOutAll,
+  LogoutSession,
+};

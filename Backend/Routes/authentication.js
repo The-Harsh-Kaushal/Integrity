@@ -3,11 +3,12 @@ const Routes = express.Router();
 const User = require("../Modals/UserSchema");
 const bcrypt = require("bcrypt");
 
+const { LogMidware, SigMidware } = require("../Middleware/Auth");
 const {
-  LogMidware,
-  SigMidware,
   RefreshSession,
-} = require("../Middleware/Auth");
+  LogOutAll,
+  LogoutSession,
+} = require("../Middleware/Session");
 
 const { CreateSession } = require("../Middleware/Session");
 
@@ -43,6 +44,19 @@ Routes.post("/refresh", RefreshSession, async (req, res) => {
     success: true,
     message: "Access token refreshed",
     accessToken: NewSession,
+  });
+});
+
+Routes.post("/logout", LogoutSession, async (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "sucessfull Logut",
+  });
+});
+Routes.post("/logoutall", LogOutAll, async (req, res) => {
+  return res.status(200).json({
+    sucess: true,
+    message: "sucessfull Logout",
   });
 });
 
