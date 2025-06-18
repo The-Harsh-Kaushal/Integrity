@@ -25,7 +25,6 @@ const LogMidware = async (req, res, next) => {
       error: "Wrong Credentials",
     });
   }
-  res.user = AUser;
   next();
 };
 const SigMidware = async (req, res, next) => {
@@ -52,10 +51,7 @@ const SigMidware = async (req, res, next) => {
   });
   try {
     await NewUser.save();
-    return res.status(200).json({
-      staus: true,
-      message: "User Created sucessfully",
-    });
+    next();
   } catch (err) {
     return res.status(405).json({
       status: false,
