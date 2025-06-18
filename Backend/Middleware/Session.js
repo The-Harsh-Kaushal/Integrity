@@ -28,7 +28,7 @@ const CreateSession = async (req, res, next) => {
     req.accessToken = accessToken;
     req.refreshToken = refreshToken;
 
-    const ref = new RefreshToken({ refresh: refreshToken, email });
+    const ref = new RefreshToken({ refresh: refreshToken, email: email });
 
     await ref.save();
 
