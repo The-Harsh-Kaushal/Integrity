@@ -15,8 +15,6 @@ App.use("/api/auth", authenticationRoutes);
 App.use("/api/uploads", uploadRoutes);
 App.use("/api/block", blockRoutes);
 
-App.use(express.static("static"));
-
 App.get("/", VerifySession, (req, res) => {
   const user = req.user;
   return res.status(200).json({ message: "hello ", user: user });
