@@ -20,7 +20,7 @@ const CreateSession = async (req, res, next) => {
 
   try {
     const accessToken = await AsyncSign({ email }, process.env.SESSION_SECRET, {
-      expiresIn: "15s",
+      expiresIn: "15m",
     });
 
     const refreshToken = await AsyncSign({ email }, process.env.REFRESH_SECRET);

@@ -5,14 +5,16 @@ const Mongoose = require("mongoose");
 const authenticationRoutes = require("./Routes/authentication");
 const { VerifySession } = require("./Middleware/Session");
 const uploadRoutes = require("./Routes/fileupload");
-
+const blockRoutes = require("./Routes/blockroutes");
 const cors = require("cors");
 
 App.use(cors());
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use("/api/auth", authenticationRoutes);
-App.use("/api", uploadRoutes);
+App.use("/api/uploads", uploadRoutes);
+App.use("/api/block", blockRoutes);
+
 App.use(express.static("static"));
 
 App.get("/", VerifySession, (req, res) => {

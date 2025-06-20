@@ -6,9 +6,21 @@
     <title>Document</title>
   </head>
   <body>
-    <form action="/api/upload" method="post" enctype="multipart/form-data">
+    <form
+      action="/api/uploads/upload"
+      method="post"
+      enctype="multipart/form-data"
+    >
       <input type="file" name="filetohash" />
       <button type="submit">submit</button>
+    </form>
+    <form
+      action="/api/uploads/verifydoc"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="filetohash" />
+      <button type="submit">VerifySubmit</button>
     </form>
   </body>
 </html>
