@@ -28,6 +28,7 @@ const LogMidware = async (req, res, next) => {
   next();
 };
 const SigMidware = async (req, res, next) => {
+  console.log(req.body);
   if (!req.body.email || !req.body.password || !req.body.name) {
     return res.status(401).json({
       status: false,

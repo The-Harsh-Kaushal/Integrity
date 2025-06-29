@@ -2,7 +2,7 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <nav className="bg-[var(--bg)] text-[var(--text)] px-4 py-3 shadow-md">
+    <nav className="bg-[var(--surface-1)] text-[var(--text)] px-4 py-3 shadow-md">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <span className="text-xl">🛡️</span>

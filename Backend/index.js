@@ -1,16 +1,25 @@
 const express = require("express");
 const App = express();
 const Mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const authenticationRoutes = require("./Routes/authentication");
 const { VerifySession } = require("./Middleware/Session");
 const uploadRoutes = require("./Routes/fileupload");
 const blockRoutes = require("./Routes/blockroutes");
-const cors = require("cors");
 
-App.use(cors());
+App.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
+App.use(cookieParser());
+
+
 App.use("/api/auth", authenticationRoutes);
 App.use("/api/uploads", uploadRoutes);
 App.use("/api/block", blockRoutes);

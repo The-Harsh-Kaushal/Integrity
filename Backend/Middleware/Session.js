@@ -23,7 +23,11 @@ const CreateSession = async (req, res, next) => {
       expiresIn: "15m",
     });
 
-    const refreshToken = await AsyncSign({ email }, process.env.REFRESH_SECRET);
+    const refreshToken = await AsyncSign(
+      { email },
+      process.env.REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
 
     req.accessToken = accessToken;
     req.refreshToken = refreshToken;
@@ -68,7 +72,7 @@ const VerifySession = (req, res, next) => {
 
 // Refresh access token using refresh token
 const RefreshSession = async (req, res, next) => {
-  const { refTok } = req.body;
+  const refTok = req.cookies.refreshToken;
 
   if (!refTok) {
     return res.status(400).json({
@@ -93,12 +97,13 @@ const RefreshSession = async (req, res, next) => {
     const newAccessToken = await AsyncSign(
       { email },
       process.env.SESSION_SECRET,
-      { expiresIn: "15s" }
+      { expiresIn: "15m" }
     );
 
     req.NewSession = newAccessToken;
     next();
   } catch (err) {
+    await RefreshToken.deleteOne({ refresh: existing.refresh });
     return res.status(401).json({
       success: false,
       error: "Refresh token is invalid or expired",
@@ -106,16 +111,14 @@ const RefreshSession = async (req, res, next) => {
   }
 };
 const LogoutSession = async (req, res, next) => {
+  const refTok = req.cookies.refreshToken;
+  if (!refTok) {
+    return res.status(400).json({
+      success: false,
+      error: "Refresh token not provided",
+    });
+  }
   try {
-    const { refTok } = req.body;
-
-    if (!refTok) {
-      return res.status(400).json({
-        success: false,
-        error: "Refresh token not provided",
-      });
-    }
-
     const SessionToDel = await RefreshToken.findOne({ refresh: refTok });
 
     if (SessionToDel) {
@@ -132,15 +135,15 @@ const LogoutSession = async (req, res, next) => {
 };
 
 const LogOutAll = async (req, res, next) => {
-  try {
-    const { refTok } = req.body;
+  const  refTok  = req.cookies.refreshToken;
 
-    if (!refTok) {
-      return res.status(400).json({
-        success: false,
-        error: "Refresh token not provided",
-      });
-    }
+  if (!refTok) {
+    return res.status(400).json({
+      success: false,
+      error: "Refresh token not provided",
+    });
+  }
+  try {
 
     const SessionToDel = await RefreshToken.findOne({ refresh: refTok });
 

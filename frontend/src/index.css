@@ -1,13 +1,62 @@
 @import "tailwindcss";
 
-@tailwind utilities;
 
+body{
+  background: var(--surface-0);
+}
 :root {
-  --primary: #2563eb;
-  --accent: #22d3ee;
-  --bg-dark: #0f172a;
-  --surface: #1e293b;
-  --text-light: #f1f5f9;
-  --success: #10b981;
-  --error: #ef4444;
+  --surface-0: #0F1A17;
+  --surface-1: #182722;
+  --surface-2: #22352F;
+  --surface-3: #2C433C;
+  --overlay-scrim: rgba(15, 26, 23, 0.55);
+  --border: #355146;
+
+  --text: #DEFCE9;
+  --text-muted: #A4CBB9;
+  --text-muted2: #94A3B8;
+  --text-soft: #B7E4D1;
+  --text-inverted: #0F1A17;
+
+  --primary: #30E0A1;
+  --primary-hover: #29C48F;
+  --secondary: #3FA9F5;
+  --error: #FF7A7A;
+  --warning: #FFCF59;
+  --success: #48D697;
+}
+
+.button-hover {
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+
+.button-hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  transform: skewX(-20deg);
+}
+
+.button-hover:hover::before {
+  animation: shine 1.2s ease-in-out forwards;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
 }
