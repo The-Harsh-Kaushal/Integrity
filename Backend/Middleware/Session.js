@@ -47,8 +47,9 @@ const CreateSession = async (req, res, next) => {
 };
 
 // Middleware to verify access token
-const VerifySession = (req, res, next) => {
+const VerifySession = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
+ 
 
   if (!token) {
     return res.status(401).json({
@@ -56,18 +57,17 @@ const VerifySession = (req, res, next) => {
       message: "Access token is missing",
     });
   }
-
-  jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({
-        success: false,
-        message: "Access token is invalid or expired",
-      });
-    }
-
-    req.user = decoded;
+  try {
+    const decoded = await AsyncVerify(token, process.env.SESSION_SECRET);
+    req.user = decoded.email;
     next();
-  });
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      message: "Access token is invalid or expired",
+      error: err,
+    });
+  }
 };
 
 // Refresh access token using refresh token
@@ -93,7 +93,6 @@ const RefreshSession = async (req, res, next) => {
   try {
     const decoded = await AsyncVerify(refTok, process.env.REFRESH_SECRET);
     const { email } = decoded;
-
     const newAccessToken = await AsyncSign(
       { email },
       process.env.SESSION_SECRET,
@@ -101,9 +100,11 @@ const RefreshSession = async (req, res, next) => {
     );
 
     req.NewSession = newAccessToken;
+
     next();
   } catch (err) {
     await RefreshToken.deleteOne({ refresh: existing.refresh });
+    console.error(err);
     return res.status(401).json({
       success: false,
       error: "Refresh token is invalid or expired",
@@ -135,7 +136,7 @@ const LogoutSession = async (req, res, next) => {
 };
 
 const LogOutAll = async (req, res, next) => {
-  const  refTok  = req.cookies.refreshToken;
+  const refTok = req.cookies.refreshToken;
 
   if (!refTok) {
     return res.status(400).json({
@@ -144,7 +145,6 @@ const LogOutAll = async (req, res, next) => {
     });
   }
   try {
-
     const SessionToDel = await RefreshToken.findOne({ refresh: refTok });
 
     if (SessionToDel) {

@@ -5,6 +5,18 @@ const { CreateBlock, DocVerification } = require("../Middleware/Block");
 const { VerifySession } = require("../Middleware/Session");
 
 const Routes = express.Router();
+const allowedTypes = [
+  "application/pdf",
+  "application/zip",
+  "application/x-zip-compressed",
+  "text/plain",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "image/png",
+  "image/jpeg",
+  "application/json",
+  "text/csv",
+];
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -16,7 +28,26 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50 MB
+  },
+  fileFilter: (req, file, cb) => {
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          `Unsupported file type: ${
+            file.mimetype
+          }. Allowed types are: ${allowedTypes.join(", ")}`
+        ),
+        false
+      );
+    }
+  },
+});
 
 Routes.post(
   "/upload",
@@ -25,7 +56,7 @@ Routes.post(
   CreateBlock,
   (req, res) => {
     console.log(req.file);
-    return res.json({ messae: "yo" });
+    return res.status(200).json({ success: true, message: req.CSendbackR });
   }
 );
 

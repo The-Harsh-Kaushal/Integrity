@@ -23,6 +23,16 @@ App.use(cookieParser());
 App.use("/api/auth", authenticationRoutes);
 App.use("/api/uploads", uploadRoutes);
 App.use("/api/block", blockRoutes);
+App.use((err, req, res, next) => {
+  if (
+    err instanceof require("multer").MulterError ||
+    err.message.includes("Unsupported file type")
+  ) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next(err); 
+});
+
 
 App.get("/", VerifySession, (req, res) => {
   const user = req.user;

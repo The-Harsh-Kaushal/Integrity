@@ -2,21 +2,16 @@ import { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 
 import AuthenticationPage from "../pages/AuthenticationPage";
-import Authentication from "../components/Authentication";
-
+import Home from "../pages/Home";
+import "./index.css";
 
 function App() {
   return (
     <>
-      {/* <AuthenticationPage/> */}
-      <Authentication/>
-     
-      {/*    
      <Routes>
-      <Route path="/login" element={<Login/>} />
-      <Route path="/SignUp"  element={<Signup/>}/>
+      <Route path="/authentication" element={<AuthenticationPage/>} />
       <Route path="/"  element={<Home/>}/>
-     </Routes> */}
+     </Routes>
     </>
   );
 }

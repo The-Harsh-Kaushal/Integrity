@@ -18,7 +18,7 @@ Routes.post("/signup", SigMidware, CreateSession, async (req, res) => {
   const { accessToken, refreshToken } = req;
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "none",
     path: "/api/auth",
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -35,7 +35,7 @@ Routes.post("/login", LogMidware, CreateSession, async (req, res) => {
   const { accessToken, refreshToken } = req;
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "none",
     path: "/api/auth",
     maxAge: 7 * 24 * 60 * 60 * 1000,

@@ -5,7 +5,7 @@ const HashSchema = new mongoose.Schema({
   index: { type: Number, required: true },
   timestamp: { type: Date, default: Date.now },
   previousHash: { type: String, required: true },
-  blockHash: { type: String, required: true },
+  blockHash: { type: String, required: true, unique:true },
   docHash: { type: String, required: true },
   filename: { type: String, required: true },
   lastVerified: { type: Date, default: Date.now() },

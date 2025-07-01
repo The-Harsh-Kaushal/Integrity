@@ -19,7 +19,6 @@ const hashFile = (filePath) => {
 // Middleware to create a new block
 const CreateBlock = async (req, res, next) => {
   const email = req.user;
-
   try {
     const lBlock = await storedHash
       .findOne({ unique_id: email })
@@ -49,12 +48,19 @@ const CreateBlock = async (req, res, next) => {
       filetype: req.file.mimetype,
       filename: req.file.originalname,
     });
-
+    
     await ABlock.save();
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error("Failed to delete file:", err);
       }
+      const ClientResp = {
+        index : newIndex,
+        docHash: blockHash,
+        filetype: req.file.mimetype,
+        filename: req.file.originalname
+      }
+      req.CSendbackR = ClientResp;
       next();
     });
   } catch (err) {
