@@ -11,14 +11,14 @@ const blockRoutes = require("./Routes/blockroutes");
 
 App.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://192.168.4.16:5173/", "http://localhost:5173"],
     credentials: true,
   })
 );
+
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use(cookieParser());
-
 
 App.use("/api/auth", authenticationRoutes);
 App.use("/api/uploads", uploadRoutes);
@@ -30,9 +30,8 @@ App.use((err, req, res, next) => {
   ) {
     return res.status(400).json({ success: false, message: err.message });
   }
-  next(err); 
+  next(err);
 });
-
 
 App.get("/", VerifySession, (req, res) => {
   const user = req.user;

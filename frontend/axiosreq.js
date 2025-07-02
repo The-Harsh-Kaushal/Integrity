@@ -1,63 +1,80 @@
 // api.js -------------------------------------------------
 import axios from "axios";
 
+// OPTIONAL: if you prefer history.push over window.location,
+// you can create a single‑page friendly history object instead.
+// import { createBrowserHistory } from "history";
+// export const history = createBrowserHistory();
+
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
-  withCredentials: true,       // send refresh cookie, if you use one
+  withCredentials: true,
 });
 
 // ---------- helpers ----------
 let isRefreshing = false;
 let queuedRequests = [];
 
-/** Attach token to outbound request */
+/** Attach token to every outbound request */
 api.interceptors.request.use(cfg => {
   const token = sessionStorage.getItem("accessToken");
   if (token) cfg.headers.Authorization = `Bearer ${token}`;
   return cfg;
 });
 
-/** Handle 401 responses */
+/** Global 401 handler */
 api.interceptors.response.use(
-  res => res,                          // happy path → just return
+  res => res,                    // happy path → just return response
   async err => {
     const { config, response } = err;
 
-    // Only deal with 401 once per request
+    // Bail out if no 401 or we already retried this call
     if (!response || response.status !== 401 || config._retry) {
       return Promise.reject(err);
     }
-    config._retry = true;              // mark so we don't loop forever
+    config._retry = true;
 
-    // ----- queue logic -----
+    /* ---------------- queue duplicate 401s while we're refreshing --------------- */
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         queuedRequests.push({ resolve, reject });
       })
         .then(token => {
           config.headers.Authorization = `Bearer ${token}`;
-          return api(config);          // retry original request
+          return api(config); // retry original
         })
         .catch(Promise.reject);
     }
 
     isRefreshing = true;
     try {
-      // hit refresh endpoint (expects refresh cookie or refresh‑token header)
-      const { data } = await api.post("/auth/refresh"); // returns { token: "newJWT" }
-      const newToken = data.session;
+      // Attempt refresh
+      const { data } = await api.post("/auth/refresh");
+      const newToken = data.session;   // { session: "newAccessJWT" }
 
+      // persist + attach new token
       sessionStorage.setItem("accessToken", newToken);
       api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-      // flush queued requests
+      // retry failed requests
       queuedRequests.forEach(p => p.resolve(newToken));
       queuedRequests = [];
-      return api(config);              // retry original request
+
+      return api(config);              // retry first failed call
     } catch (refreshErr) {
+      /* -------------- REFRESH FAILED → force logout & redirect --------------- */
       queuedRequests.forEach(p => p.reject(refreshErr));
       queuedRequests = [];
-      return Promise.reject(refreshErr); // bubble up (user must re‑login)
+
+      sessionStorage.removeItem("accessToken");  // clear stale token
+
+      // 1) If you are OK with a full page reload (simplest):
+      window.location.replace("/authentication");              // <— redirects to '/'
+
+      // 2) If you’d rather stay SPA‑native, inject history:
+      // history.push("/");
+
+      return Promise.reject(refreshErr);
     } finally {
       isRefreshing = false;
     }

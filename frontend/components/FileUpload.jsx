@@ -4,91 +4,100 @@ import fileUploadIcon from "./utility/images/file_upload.png";
 import AuthButton from "./utility/AuthButton";
 import api from "../axiosreq";
 
-const FileUpload = ({ responseCallback }) => {
-  const inputref = useRef(null);
-  const [file, setfile] = useState(null);
-  const [dLabel, setdLable] = useState(null);
-  const [disableButton, setdisaleButton] = useState(true);
+/**
+ * Mobile‑first, responsive file upload/verify component.
+ * – Full‑width on phones, fixed card width on tablets/desktop
+ * – Buttons stack on mobile, sit inline from sm≥640px
+ * – Minor typo fixes (setDisableButton, displayLabel)
+ */
+const FileUpload = ({ responseCallback, setRefetch }) => {
+  const inputRef = useRef(null);
+  const [file, setFile] = useState(null);
+  const [displayLabel, setDisplayLabel] = useState(null);
+  const [disableButton, setDisableButton] = useState(true);
 
-  const fileuploaddiv = () => {
-    inputref.current.click();
-  };
+  const triggerFileSelect = () => inputRef.current?.click();
 
-  const handlechange = (e) => {
+  const handleChange = (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    setfile(f);
-    setdisaleButton(false);
-    let Oname = e.target.files[0].name;
-    let fileext = Oname.split(".")[1];
-    Oname = Oname.length > 30 ? Oname.slice(0, 30) + "...." + fileext : Oname;
-    setdLable(Oname);
+    setFile(f);
+    setDisableButton(false);
+
+    // prettify long filenames for the card header
+    const originalName = f.name;
+    const [base, ext = ""] = originalName.split(".");
+    const label =
+      originalName.length > 30 ? `${base.slice(0, 26)}….${ext}` : originalName;
+    setDisplayLabel(label);
   };
 
-  const SendReqButtons = async (Url) => {
+  const sendRequest = async (url) => {
     try {
       const form = new FormData();
       form.append("filetohash", file);
-      const response = await api.post(Url, form);
-      setfile(null);
-      setdLable(null);
-      setdisaleButton(true);
-      const MsgTD = {
-        Index: response.data.message.index,
-        DocHash: response.data.message.docHash,
-      };
-      responseCallback(JSON.stringify(MsgTD));
+
+      const { data } = await api.post(url, form);
+
+      // reset
+      setFile(null);
+      setDisplayLabel(null);
+      setDisableButton(true);
+      if (inputRef.current) inputRef.current.value = null;
+
+      const msg = `${data.message} at Index ${data.block.index} with hash ${data.block.docHash}`;
+      setRefetch((prev) => prev + 1);
+      responseCallback(msg);
     } catch (err) {
-      console.log(err);
-      responseCallback(err.message);
+      responseCallback(err.response?.data?.message || err.message);
     }
   };
 
   return (
-    <div className="h-[280px] w-[400px] bg-[var(--surface-1)] shadow-xl shadow-black/30 flex flex-col transition-all duration-300 hover:shadow-2xl hover:ring-2 hover:ring-[var(--primary)] rounded-2xl overflow-hidden">
+    <div className="w-full sm:w-[22rem] bg-[var(--surface-1)] shadow-xl shadow-black/30 flex flex-col rounded-2xl overflow-hidden transition hover:shadow-2xl hover:ring-2 hover:ring-[var(--primary)]">
+      {/* Header / filename */}
       <label
         htmlFor="inputforfile"
-        className="bg-[var(--surface-1)] text-white w-full cursor-pointer border-b border-dashed border-[var(--primary)] px-3 text-center overflow-hidden text-sm py-2 font-medium transition-colors duration-200 hover:bg-[var(--surface-0)] hover:text-[var(--primary)]"
+        className="bg-[var(--surface-1)] text-white cursor-pointer border-b border-dashed border-[var(--primary)] px-2 sm:px-3 py-2 text-center truncate text-xs sm:text-sm font-medium transition-colors hover:bg-[var(--surface-0)] hover:text-[var(--primary)]"
       >
-        {dLabel ? dLabel : "Click to upload"}
+        {displayLabel ?? "Tap or click to upload"}
       </label>
 
+      {/* Drop‑zone */}
       <div
-        onClick={fileuploaddiv}
-        className="cursor-pointer bg-[var(--surface-1)] border-b border-dashed border-[var(--primary)] flex items-center justify-center p-4 relative transition-colors duration-200 hover:bg-[var(--surface-0)]"
+        onClick={triggerFileSelect}
+        className="cursor-pointer bg-[var(--surface-1)] border-b border-dashed border-[var(--primary)] flex items-center justify-center py-6 sm:py-4 transition-colors hover:bg-[var(--surface-0)]"
       >
         <input
           id="inputforfile"
           type="file"
           name="filetohash"
+          ref={inputRef}
           className="hidden"
-          ref={inputref}
-          onChange={handlechange}
+          onChange={handleChange}
         />
 
-        {/* //upper section */}
-        <div className="flex flex-col w-full h-[120px] relative items-center">
-          <span className="absolute top-[20px]">
-            <img
-              src={fileUploadIcon}
-              alt="file upload icon"
-              className="object-contain transition-transform duration-200 group-hover:scale-105"
-            />
-          </span>
-        </div>
+        {/* icon only – keep it centred */}
+        <img
+          src={fileUploadIcon}
+          alt="file upload icon"
+          className="w-12 sm:w-16 select-none pointer-events-none"
+        />
       </div>
 
-      {/* action buttons */}
-      <div className="flex px-4 items-center flex-1 bg-[var(--surface-1)] justify-between">
+      {/* Action buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 px-4 py-4 bg-[var(--surface-1)] justify-between">
         <AuthButton
           content="Upload File"
           disablebtn={disableButton}
-          oncliclbtn={() => SendReqButtons("/uploads/upload")}
+          oncliclbtn={() => sendRequest("/uploads/upload")}
+          className="flex-1"
         />
         <AuthButton
           content="Verify File"
           disablebtn={disableButton}
-          oncliclbtn={() => SendReqButtons("/uploads/verifydoc")}
+          oncliclbtn={() => sendRequest("/uploads/verifydoc")}
+          className="flex-1"
         />
       </div>
     </div>

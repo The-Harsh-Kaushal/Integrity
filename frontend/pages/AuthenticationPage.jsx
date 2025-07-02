@@ -4,6 +4,7 @@ import Authentication from "../components/Authentication";
 import bg1 from "../components/utility/images/bg/bg1.png";
 import "./style/AuthPage.css";
 
+
 const AuthenticationPage = () => {
   const [flip, setflip] = useState(false);
   const [loginOsignup, setloginOsignup] = useState(false);
@@ -23,9 +24,7 @@ const AuthenticationPage = () => {
   };
   return (
     <div className="flex flex-col h-[100vh] w-[100vw] overflow-hidden">
-      <div>
-        <Navbar />
-      </div>
+     <div><Navbar dsbLogout={true} /></div>
       <div className="flex items-center justify-center flex-1  ">
         <div
           style={{ perspective: 1000 }}

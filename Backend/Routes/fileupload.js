@@ -56,7 +56,11 @@ Routes.post(
   CreateBlock,
   (req, res) => {
     console.log(req.file);
-    return res.status(200).json({ success: true, message: req.CSendbackR });
+    return res.status(200).json({
+      success: true,
+      message: "Document Upload Sucessfull",
+      block: req.CSendbackR,
+    });
   }
 );
 
@@ -66,9 +70,11 @@ Routes.post(
   upload.single("filetohash"),
   DocVerification,
   (req, res) => {
+    console.log("verifydoc route hit..................................................")
     return res.status(200).json({
       success: true,
-      content: req.VerifiedDoc,
+      message: "Document Verification  Sucessfull",
+      block: req.VerifiedDoc,
     });
   }
 );

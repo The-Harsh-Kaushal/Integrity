@@ -1,36 +1,59 @@
 import React from "react";
-import "./CSS/block.css";
 
 const Block = ({
-  hash = "0xA1B2C3D4E5F6...",
-  image,
-  index = 1,
-  timestamp = "2025-06-04 12:00",
-  data = "Sample data",
-  nonce = 123456,
+  index = 0,
+  filename = "Unknown file",
+  timestamp = "-",
+  lastVerified = "-",
+  chained = true,
 }) => {
+  // Utility: shorten long text for display
+  const truncate = (str, max = 28) =>
+    str.length > max ? `${str.slice(0, max)}…` : str;
+
   return (
-    <div className="block-container">
-      <div className="block-connector"></div> {/* line to next block */}
-      <div className="block-card">
-        <div className="block-header">
-          <span className="block-index">🧱 Block #{index}</span>
-          <span className="block-hash">{hash}</span>
+    <div className="relative my-8">
+      {/* connector line to previous block */}
+      <div className="absolute left-1/2 -top-8 w-0.5 h-8 bg-slate-300 transform -translate-x-1/2" />
+
+      <div className="bg-slate-800 border-2 border-indigo-500 rounded-xl p-6 min-w-[320px] max-w-[360px] mx-auto flex flex-col items-center text-slate-100 font-mono shadow-lg transition-transform duration-200 hover:scale-[1.02]">
+        {/* header */}
+        <div className="w-full mb-4 flex flex-col items-start gap-1">
+          <span className="text-indigo-300 font-bold text-base">
+            🧱 Block #{index}
+          </span>
+          <span className="text-slate-400 text-sm break-all">
+            {truncate(filename)}
+          </span>
         </div>
-        {image && (
-          <div className="block-image-wrapper">
-            <img src={image} alt="Block visual" className="block-image" />
-          </div>
-        )}
-        <div className="block-info">
+
+        {/* info */}
+        <div className="w-full text-sm text-slate-300 flex flex-col gap-1">
           <div>
-            <strong>Timestamp:</strong> <code>{timestamp}</code>
+            <strong>Timestamp:</strong>{" "}
+            <code className="text-yellow-400 text-xs">
+              {new Date(timestamp).toLocaleString("en-IN", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </code>
           </div>
           <div>
-            <strong>Data:</strong> <span>{data}</span>
+            <strong>Last&nbsp;Verified:</strong>{" "}
+            <code className="text-yellow-400 text-xs">
+              {new Date(lastVerified).toLocaleString("en-IN", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </code>
           </div>
           <div>
-            <strong>Nonce:</strong> <code>{nonce}</code>
+            <strong>Integrity:</strong>{" "}
+            {chained ? (
+              <span className="text-emerald-400">✅&nbsp;Chained</span>
+            ) : (
+              <span className="text-rose-400">❌&nbsp;Broken</span>
+            )}
           </div>
         </div>
       </div>

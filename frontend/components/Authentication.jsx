@@ -36,81 +36,68 @@ const Authentication = ({
     }
   };
   return (
-    <div
-      className="flex flex-col w-[340px] h-[512px] bg-[var(--surface-2)] rounded-xl shadow-[0_2px_6px_rgba(0,0,0,0.4)]
- "
-    >
-      {/* Header Bar */}
-      <div className=" py-5  bg-gradient-to-r  text-[var(--text)] h-[88px]  flex flex-col items-center">
-        <h1 className="text-2xl font-bold font-serif  ">
-          {isLogin ? "Welcome Back!" : "Create Your Hive Account"}
-        </h1>
-        <p className="text-xs mt-1 opacity-90 ">
-          {isLogin
-            ? "Please enter your credentials to continue"
-            : "Join the swarm and explore"}
-        </p>
-      </div>
+   <div className="flex flex-col w-[340px] h-[520px] bg-[var(--surface-2)] rounded-2xl border border-[var(--surface-1)] shadow-lg shadow-[rgba(0,0,0,0.3)] overflow-hidden">
 
-      {/* Input Section */}
-      <div className="flex flex-col my-4 gap-5 py-6 mx-2 h-[270px] shadow-2xl/30 bg-[var(--surface-3)]   rounded-xl items-center justify-center">
-        {!isLogin && (
-          <Inputfield
-            label="Name"
-            placeholder="full name"
-            onchangefn={FillFormData}
-            switchicon={{
-              switch: false,
-              icon: CircleUserRound,
-            }}
-            types="name"
-          />
-        )}
-        <Inputfield
-          label="Email"
-          placeholder="example@gmail.com"
-          onchangefn={FillFormData}
-          switchicon={{
-            switch: false,
-            icon: Mail,
-          }}
-          types="email"
-        />
-        <Inputfield
-          label="Password"
-          placeholder="password"
-          onchangefn={FillFormData}
-          switchicon={{
-            switch: true,
-            icon: {
-              open: Eye,
-              close: EyeOff,
-            },
-          }}
-          types={["password", "text"]}
-        />
-      </div>
+  {/* Header Bar */}
+  <div className="py-5 px-4 bg-gradient-to-r from-[var(--surface-0)] to-[var(--surface-1)] text-[var(--text)] h-[90px] flex flex-col items-center border-b border-[var(--surface-1)]">
+    <h1 className="text-2xl font-bold font-serif tracking-tight">
+      {isLogin ? "Welcome Back to Hive!" : "Join the Hive"}
+    </h1>
+    <p className="text-xs mt-1 text-[var(--text-muted)] text-center max-w-[260px]">
+      {isLogin
+        ? "Enter your credentials to reconnect with the swarm."
+        : "Secure your data, verify your files, and own your chain."}
+    </p>
+  </div>
 
-      {/* Action Section */}
-      <div className="flex flex-col h-[122px] items-center px-6 pb-6 pt-4 gap-3">
-        <AuthButton
-          content={isLogin ? "Sign In" : "Register"}
-          disablebtn={disableBtn}
-          oncliclbtn={sendData}
-        />
-        <div className="flex items-center gap-1 text-sm text-[var(--text-muted)] mt-2">
-          <span>
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-          </span>
-          <button
-            onClick={switchls}
-            className="text-sm text-[var(--primary)] hover:underline transition-all duration-200 shadow-xl/10"
-          >
-            {isLogin ? "Sign Up" : "Sign In"}
-          </button>
-        </div>
-      </div>
+  {/* Input Section */}
+  <div className="flex flex-col my-4 gap-5 py-6 mx-3 h-[270px] bg-[var(--surface-3)] border border-[var(--surface-1)] shadow-inner rounded-xl items-center justify-center px-4">
+    {!isLogin && (
+      <Inputfield
+        label="Name"
+        placeholder="Full Name"
+        onchangefn={FillFormData}
+        switchicon={{ switch: false, icon: CircleUserRound }}
+        types="name"
+      />
+    )}
+    <Inputfield
+      label="Email"
+      placeholder="you@example.com"
+      onchangefn={FillFormData}
+      switchicon={{ switch: false, icon: Mail }}
+      types="email"
+    />
+    <Inputfield
+      label="Password"
+      placeholder="••••••••"
+      onchangefn={FillFormData}
+      switchicon={{ switch: true, icon: { open: Eye, close: EyeOff } }}
+      types={["password", "text"]}
+    />
+  </div>
+
+  {/* Action Section */}
+  <div className="flex flex-col h-[122px] items-center px-6 pb-6 pt-4 gap-3 border-t border-[var(--surface-1)] bg-[var(--surface-2)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <AuthButton
+      content={isLogin ? "Sign In" : "Register"}
+      disablebtn={disableBtn}
+      oncliclbtn={sendData}
+    />
+    <div className="flex items-center gap-1 text-sm text-[var(--text-muted)] mt-2">
+      <span>
+        {isLogin ? "Not part of Hive yet?" : "Already have an account?"}
+      </span>
+      <button
+        onClick={switchls}
+        className="text-sm text-[var(--primary)] hover:underline transition-all duration-200 shadow-sm"
+      >
+        {isLogin ? "Create one" : "Sign In"}
+      </button>
     </div>
+  </div>
+</div>
+
   );
 };
 
