@@ -11,7 +11,7 @@ const blockRoutes = require("./Routes/blockroutes");
 
 App.use(
   cors({
-    origin: ["http://192.168.4.16:5173/", "http://localhost:5173"],
+    origin: ["http://192.168.4.16:5173", "http://localhost:5173"],
     credentials: true,
   })
 );

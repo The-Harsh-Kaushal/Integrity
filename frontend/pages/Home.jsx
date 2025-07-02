@@ -12,8 +12,9 @@ const Home = () => {
   const [blocks, setblocks] = useState([]);
   const [refetch, setrefetch] = useState(0);
   const navigate = useNavigate();
+
   const NavToAuth = () => {
-    const token = localStorage.getItem("accessToken");
+    const token = sessionStorage.getItem("accessToken");
     if (!token) navigate("/authentication");
   };
   useEffect(() => {

@@ -22,7 +22,7 @@ const Navbar = ({ dsbLogout = false }) => {
     try {
       const response = await api.post("/auth/logout");
 
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
 
       navigate("/authentication");
     } catch (err) {
@@ -32,7 +32,7 @@ const Navbar = ({ dsbLogout = false }) => {
   const onLogoutAll = async () => {
     try {
       const response = await api.post("/auth/logoutall");
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       navigate("/authentication");
     } catch (err) {
       console.log(err.message);
