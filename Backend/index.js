@@ -39,7 +39,7 @@ App.get("/", VerifySession, (req, res) => {
 });
 
 const ConnectDB = () => {
-  Mongoose.connect("mongodb://localhost:27017/integrity")
+  Mongoose.connect(`${process.env.MongoDBUrl}`)
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("Could not connect to MongoDB", err));
 };
