@@ -75,16 +75,19 @@ const CreateBlock = async (req, res, next) => {
     });
 
     await ABlock.save();
+    console.log("Trying to delete:", filePath);
     fs.unlink(filePath, (err) => {
       if (err) {
-        console.error("Failed to delete file:", err);
+        console.error("Failed to delete file:", err); 
+      } else {
+        console.log("File deleted successfully.");
+        const ClientResp = {
+          index: newIndex || null,
+          docHash: docHash || null,
+        };
+        req.CSendbackR = ClientResp;
+        next();
       }
-      const ClientResp = {
-        index: newIndex || null,
-        docHash: docHash || null,
-      };
-      req.CSendbackR = ClientResp;
-      next();
     });
   } catch (err) {
     console.error("CreateBlock error:", err);
@@ -120,26 +123,28 @@ const verifyChain = async (req, res, next) => {
       .sort({ index: 1 });
 
     for (let i = 0; i < Allblocks.length; i++) {
-  const curr = Allblocks[i];
-  const prev = i === 0 ? null : Allblocks[i - 1];
+      const curr = Allblocks[i];
+      const prev = i === 0 ? null : Allblocks[i - 1];
 
-//  the digest should be in same order as it was in createblock changing positions can cause diffrent values
-  const newhash = curr.docHash +(prev ? prev.blockHash : curr.previousHash) ;
-  const expectedHash = crypto
-  .createHash('sha256')
-  .update(newhash)
-  .digest('hex');
-  
-  // 2) Two checks: link is correct AND data‑hash is correct
-  const linkOK   = i === 0          // genesis: no link to check
-  ? true
-  : prev.chained && prev.blockHash === curr.previousHash;
-  const dataOK   = expectedHash === curr.blockHash;
- 
-  // The block is chained only if *both* conditions hold
-  curr.chained   = linkOK && dataOK;
-  curr.lastVerified = new Date();    // Date object > raw ms number
-}
+      //  the digest should be in same order as it was in createblock changing positions can cause diffrent values
+      const newhash =
+        curr.docHash + (prev ? prev.blockHash : curr.previousHash);
+      const expectedHash = crypto
+        .createHash("sha256")
+        .update(newhash)
+        .digest("hex");
+
+      // 2) Two checks: link is correct AND data‑hash is correct
+      const linkOK =
+        i === 0 // genesis: no link to check
+          ? true
+          : prev.chained && prev.blockHash === curr.previousHash;
+      const dataOK = expectedHash === curr.blockHash;
+
+      // The block is chained only if *both* conditions hold
+      curr.chained = linkOK && dataOK;
+      curr.lastVerified = new Date(); // Date object > raw ms number
+    }
 
     await Promise.all(Allblocks.map((doc) => doc.save()));
 
