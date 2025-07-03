@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const App = express();
 const Mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -24,6 +25,7 @@ App.use(cookieParser());
 App.use("/api/auth", authenticationRoutes);
 App.use("/api/uploads", uploadRoutes);
 App.use("/api/block", blockRoutes);
+
 App.use((err, req, res, next) => {
   if (
     err instanceof require("multer").MulterError ||
@@ -34,9 +36,14 @@ App.use((err, req, res, next) => {
   next(err);
 });
 
-App.get("/", VerifySession, (req, res) => {
-  const user = req.user;
-  return res.status(200).json({ message: "hello ", user: user });
+
+App.use(express.static(path.join(process.cwd(), "client/dist")));
+
+
+App.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(
+    path.join(process.cwd(), "client/dist", "index.html")
+  );
 });
 
 const ConnectDB = () => {

@@ -29,6 +29,7 @@ const Authentication = ({
       sessionStorage.setItem("accessToken", response.data.session);
       navigate("/");
     } catch (err) {
+      loaderstate(false);
       console.log(err);
       Swal.fire({
         icon: "error",

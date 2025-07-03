@@ -28,6 +28,7 @@ const Navbar = ({ dsbLogout = false, loaderSetfn }) => {
 
       navigate("/authentication");
     } catch (err) {
+    loaderSetfn(false);
       console.log(err.message);
     }
   };
@@ -39,6 +40,7 @@ const Navbar = ({ dsbLogout = false, loaderSetfn }) => {
       loaderSetfn(false);
       navigate("/authentication");
     } catch (err) {
+      loaderSetfn(false);
       console.log(err.message);
     }
   };
