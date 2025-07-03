@@ -4,6 +4,15 @@ const App = express();
 const Mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const fs = require("fs");
+
+
+const uploadPath = path.join(__dirname, "upload");
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath);
+  console.log("✅ Created missing upload directory on startup.");
+}
 
 const authenticationRoutes = require("./Routes/authentication");
 const { VerifySession } = require("./Middleware/Session");
