@@ -7,7 +7,7 @@ import axios from "axios";
 // export const history = createBrowserHistory();
 
 const api = axios.create({
-  baseURL: "https://integrity-epcn.onrender.com/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 

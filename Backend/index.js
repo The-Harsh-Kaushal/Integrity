@@ -9,9 +9,10 @@ const { VerifySession } = require("./Middleware/Session");
 const uploadRoutes = require("./Routes/fileupload");
 const blockRoutes = require("./Routes/blockroutes");
 
+const allowed = JSON.parse(process.env.ALLOWED_DOMAIN || "[]");
 App.use(
   cors({
-    origin: ["http://192.168.4.16:5173", "http://localhost:5173"],
+    origin: allowed,
     credentials: true,
   })
 );
@@ -39,7 +40,7 @@ App.get("/", VerifySession, (req, res) => {
 });
 
 const ConnectDB = () => {
-  Mongoose.connect(`${process.env.MongoDBUrl}`)
+  Mongoose.connect(`${process.env.MONGODB_URL}`)
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("Could not connect to MongoDB", err));
 };
