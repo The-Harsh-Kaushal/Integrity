@@ -7,10 +7,10 @@ import "./index.css";
 import About from "../pages/About";
 
 
+
 function App() {
   return (
     <>
-    
      <Routes>
       <Route path="/authentication" element={<AuthenticationPage/>} />
       <Route path="/"  element={<Home/>}/>

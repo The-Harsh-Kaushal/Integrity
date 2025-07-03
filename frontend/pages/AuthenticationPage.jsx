@@ -3,11 +3,13 @@ import Navbar from "../components/Navbar";
 import Authentication from "../components/Authentication";
 import bg1 from "../components/utility/images/bg/bg1.png";
 import "./style/AuthPage.css";
+import { FullScreenLoader } from "../components/utility/FullScreenLoader";
 
 
 const AuthenticationPage = () => {
   const [flip, setflip] = useState(false);
   const [loginOsignup, setloginOsignup] = useState(false);
+  const [Loader , setLoader]=useState(false);
 
   const SwitchLS = () => {
     setflip((pr) => {
@@ -23,6 +25,8 @@ const AuthenticationPage = () => {
     }, 1000);
   };
   return (
+    <>
+    <FullScreenLoader loading={Loader}/>
     <div className="flex flex-col h-[100vh] w-[100vw] overflow-hidden">
      <div><Navbar dsbLogout={true} /></div>
       <div className="flex items-center justify-center flex-1  ">
@@ -40,6 +44,7 @@ const AuthenticationPage = () => {
                 switchls={SwitchLS}
                 isLogin={loginOsignup}
                 gotUrl={loginOsignup ? "/auth/login" : "/auth/signup"}
+                loaderstate={setLoader}
               />
             </div>
             <div className="absolute backface-hidden h-full w-full rotate-y-[180deg] ">
@@ -49,6 +54,7 @@ const AuthenticationPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

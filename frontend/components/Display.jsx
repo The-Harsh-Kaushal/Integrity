@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const Display = ({ message }) => {
   return (
-    <div className="w-full max-w-[500px] h-[280px] sm:h-[300px] bg-[#142823] rounded-2xl shadow-[0_4px_20px_rgba(37,188,124,0.2)] p-4 sm:p-5 flex flex-col gap-4 text-[#25BC7C] font-sans">
+    <div className="w-full max-w-[500px] h-[280px] sm:h-[300px] bg-[#142823] rounded-2xl shadow-[0_4px_20px_rgba(37,188,124,0.2)] p-4 sm:p-5 flex flex-col gap-4 text-[#25BC7C] font-sans animate-fade-in">
       <div className="text-base sm:text-lg font-semibold border-b border-[#25bc7c33] pb-1">
         HIVE: File Hash
       </div>

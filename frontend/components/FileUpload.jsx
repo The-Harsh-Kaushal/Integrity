@@ -47,7 +47,7 @@ const FileUpload = ({ responseCallback ,setrefetch}) => {
   };
 
   return (
-    <div className="h-[280px] w-[400px] bg-[var(--surface-1)] shadow-xl shadow-black/30 flex flex-col transition-all duration-300 hover:shadow-2xl hover:ring-2 hover:ring-[var(--primary)] rounded-2xl overflow-hidden">
+    <div className="h-[280px] w-[400px] bg-[var(--surface-1)] shadow-xl shadow-black/30 flex flex-col transition-all duration-300 hover:shadow-2xl hover:ring-2 hover:ring-[var(--primary)] rounded-2xl overflow-hidden animate-fade-in">
       <label
         htmlFor="inputforfile"
         className="bg-[var(--surface-1)] text-white w-full cursor-pointer border-b border-dashed border-[var(--primary)] px-3 text-center overflow-hidden text-sm py-2 font-medium transition-colors duration-200 hover:bg-[var(--surface-0)] hover:text-[var(--primary)]"

@@ -10,6 +10,7 @@ const Authentication = ({
   isLogin = false,
   gotUrl = "/auth/signup",
   switchls,
+  loaderstate
 }) => {
   const [form, setForm] = useState({});
   const [disableBtn, setdisableBtn] = useState(true);
@@ -21,7 +22,9 @@ const Authentication = ({
   };
   const sendData = async () => {
     try {
+      loaderstate(true);
       const response = await api.post(gotUrl, form);
+      loaderstate(false);
       console.log(response);
       sessionStorage.setItem("accessToken", response.data.session);
       navigate("/");
@@ -36,7 +39,7 @@ const Authentication = ({
     }
   };
   return (
-   <div className="flex flex-col w-[340px] h-[520px] bg-[var(--surface-2)] rounded-2xl border border-[var(--surface-1)] shadow-lg shadow-[rgba(0,0,0,0.3)] overflow-hidden">
+   <div className="flex flex-col w-[340px] h-[520px] bg-[var(--surface-2)] rounded-2xl border border-[var(--surface-1)] shadow-lg shadow-[rgba(0,0,0,0.3)] overflow-hidden animate-fade-in">
 
   {/* Header Bar */}
   <div className="py-5 px-4 bg-gradient-to-r from-[var(--surface-0)] to-[var(--surface-1)] text-[var(--text)] h-[90px] flex flex-col items-center border-b border-[var(--surface-1)]">

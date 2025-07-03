@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../axiosreq";
 
-const Navbar = ({ dsbLogout = false }) => {
+const Navbar = ({ dsbLogout = false, loaderSetfn }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -20,9 +20,11 @@ const Navbar = ({ dsbLogout = false }) => {
 
   const onLogout = async () => {
     try {
+      loaderSetfn(true);
       const response = await api.post("/auth/logout");
 
       sessionStorage.removeItem("accessToken");
+      loaderSetfn(false);
 
       navigate("/authentication");
     } catch (err) {
@@ -31,8 +33,10 @@ const Navbar = ({ dsbLogout = false }) => {
   };
   const onLogoutAll = async () => {
     try {
+      loaderSetfn(true);
       const response = await api.post("/auth/logoutall");
       sessionStorage.removeItem("accessToken");
+      loaderSetfn(false);
       navigate("/authentication");
     } catch (err) {
       console.log(err.message);
@@ -40,7 +44,7 @@ const Navbar = ({ dsbLogout = false }) => {
   };
 
   return (
-    <nav className="bg-[var(--surface-1)] w-full fixed text-[var(--text)] px-4 py-3 shadow-md z-50 ">
+    <nav className="bg-[var(--surface-1)] w-full fixed text-[var(--text)] px-4 py-3 shadow-md z-50 animate-fade-in">
       <div className="flex justify-between items-center">
         {/* Logo & Brand */}
         <div

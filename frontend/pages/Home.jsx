@@ -6,11 +6,14 @@ import Block from "../components/Block";
 import AuthButton from "../components/utility/AuthButton";
 import api from "../axiosreq";
 import { useNavigate } from "react-router-dom";
+import { FullScreenLoader } from "../components/utility/FullScreenLoader";
+
 
 const Home = () => {
   const [msgToDisplay, setMsgToDisplay] = useState(null);
   const [blocks, setblocks] = useState([]);
   const [refetch, setrefetch] = useState(0);
+  const [Loader,setLoader] = useState(false);
   const navigate = useNavigate();
 
   const NavToAuth = () => {
@@ -42,9 +45,11 @@ const Home = () => {
   };
 
   return (
+    <>
+    <FullScreenLoader loading={Loader}/>
     <div className="min-h-screen flex flex-col bg-surface-0 text-white">
       {/* Top navigation */}
-      <Navbar />
+      <Navbar loaderSetfn={setLoader} />
 
       {/* Upload & hash display */}
       <section className="mx-auto mt-16 pt-16 w-full max-w-7xl px-6 sm:px-12 flex flex-col lg:flex-row gap-40">
@@ -84,6 +89,7 @@ const Home = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 
